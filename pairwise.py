@@ -1,3 +1,4 @@
+#FIXME: assymetric input failure
 import sys
 class Pairwise():
     def __init__(self, seq1 = None, seq2 = None):
