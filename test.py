@@ -39,13 +39,13 @@ class testPairwise(unittest.TestCase):
 
     ##### ~Test Edge Cases~ #####
 
-    def test_assymetric_input1(self):
+    def test_asymetric_input1(self):
         """test for case where string 1 is longer than string 2"""
         self.P3 = Pairwise(self.test_seq1, self.test_seq3)
         self.assertEqual(self.P3.score(), self.optimal_score13)
         self.assertEqual(str(self.P3), f"{self.test_seq_op13}\n{self.test_seq_op31}")
 
-    def test_assymetric_input2(self):
+    def test_asymetric_input2(self):
         """test for case where string 2 is longer than string 1"""
         self.P4 = Pairwise(self.test_seq4, self.test_seq2)
         self.assertEqual(self.P4.score(), self.optimal_score42)

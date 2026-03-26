@@ -1,4 +1,5 @@
 #FIXME: assymetric input failure
+#FIXME: implement read from file option
 import sys
 class Pairwise():
     def __init__(self, seq1 = None, seq2 = None):
@@ -31,6 +32,7 @@ class Pairwise():
         if a[a_loc] == 'X' and b[b_loc] == 'X':
             nested[0] = [-1 * i for i in range(len(a))]
             for i in range(len(b)):
+                #FIXME: Fails if string 2 is longer than string 1 
                 nested[i][0] = i * -1
             nested[a_loc][b_loc] = 0  
         else:
@@ -62,6 +64,7 @@ class Pairwise():
         elif motion == 1:
             traceback[i][j] = 'vertical'
         else:
+            #FIXME: fails if string 1 is longer than string 2
             traceback[i][j] = 'horizontal'
         return [maximum, traceback]
     
