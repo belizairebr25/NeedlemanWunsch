@@ -13,7 +13,7 @@ class testPairwise(unittest.TestCase):
         self.test_seq_op2 = "G-ATTACA"
         self.test_seq_op3 = "CAGC-TA"
         self.test_seq_op4 = "CA-CATA"
-        self.test_seq_op13 = "GACTGC-G"
+        self.test_seq_op13 = "GCATGC-G"
         self.test_seq_op31 = "-CA-GCTA"
         self.test_seq_op24 = "CA-CATA"
         self.test_seq_op42 = "GATTACA"
@@ -49,13 +49,13 @@ class testPairwise(unittest.TestCase):
         """test for case where string 2 is longer than string 1"""
         self.P4 = Pairwise(self.test_seq4, self.test_seq2)
         self.assertEqual(self.P4.score(), self.optimal_score42)
-        self.assertEqual(str(self.P4), f"{self.test_seq_op42}\n{self.test_seq_op24}")
+        self.assertEqual(str(self.P4), f"{self.test_seq_op24}\n{self.test_seq_op42}")
 
     def test_improper_input(self):
         """Assert bad inputs(nonstring) raise value errors"""
         with self.assertRaises(ValueError): Pairwise(5, 6)
         with self.assertRaises(ValueError): Pairwise(True, False)
-        with self.assertRaises(ValueError): Pairwise()
+        with self.assertRaises(ValueError): Pairwise('LAUGHABLE', 'SEQUENCE')
 
 
 if __name__ == "__main__":

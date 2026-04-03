@@ -1,4 +1,3 @@
-#FIXME: assymetric input failure
 #FIXME: implement read from file option
 import sys
 class Pairwise():
@@ -6,15 +5,21 @@ class Pairwise():
         """initialize object variables
         set up alignment matrix and compute optimal path"""
         #object vars
-        if type(seq1) != str or type(seq2) != str:
+        if type(seq1) != str or type(seq2) != str :
             raise ValueError("Bad input")
         self._seq1 = [char for char in seq1] #list stores sequence 1
         self._seq2 = [char for char in seq2] #list stores sequence 2
         self._final_seq1 = None
         self._final_seq2 = None
         self._score = None
-        #check input values:
-        
+        #set of all acceptable values:
+        _acceptable = {'A', 'G', 'C', 'T', 'U'}
+        _all = self._seq1 + self._seq2
+        #check all values for acceptability O(n)
+        if all(char in _acceptable for char in _all):
+            pass
+        else:
+            raise ValueError("Invalid Sequence")
         #call methods
         self._alignment = self._fill_matrix(self._seq1, self._seq2)
         self._score = self._alignment[2]
@@ -25,14 +30,13 @@ class Pairwise():
         """create alignment matrix"""
         a.insert(0, 'X')
         b.insert(0, 'X')
-        nested = [['N' for _ in range(len(b))] for _ in range(len(a))]
-        traceback = [['N' for _ in range(len(b))] for _ in range(len(a))]
+        nested = [['N' for _ in range(len(a))] for _ in range(len(b))]
+        traceback = [['N' for _ in range(len(a))] for _ in range(len(b))]
         a_loc = 0
         b_loc = 0
         if a[a_loc] == 'X' and b[b_loc] == 'X':
             nested[0] = [-1 * i for i in range(len(a))]
-            for i in range(len(b)):
-                #FIXME: Fails if string 2 is longer than string 1 
+            for i in range(len(b)):       
                 nested[i][0] = i * -1
             nested[a_loc][b_loc] = 0  
         else:
@@ -51,8 +55,7 @@ class Pairwise():
         if a[j] == b[i]:
             score = 1
         else:
-            score = -1
-                
+            score = -1    
         vertical = nested[i - 1][j] - 1
         horizontal = nested[i][j - 1] -1
         diagonal = nested[i - 1][j - 1] + score
@@ -64,12 +67,11 @@ class Pairwise():
         elif motion == 1:
             traceback[i][j] = 'vertical'
         else:
-            #FIXME: fails if string 1 is longer than string 2
             traceback[i][j] = 'horizontal'
         return [maximum, traceback]
     
     def _print_matrix(self, a, b, nested):
-        """troubleshooting method prints matrix"""
+        """troubleshooting method prints matrix; not used nominally"""
         print("X", a)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         for i in range(0, len(nested)):
@@ -127,10 +129,19 @@ class Pairwise():
         return f"{final_seq1}\n{str(final_seq2)}"
 
 if __name__ == "__main__":
-    seq1 = sys.argv[1]
-    seq2 = sys.argv[2]
-    #FIX get seq1 and seq2 from cmdl arguments
+    #get seq1 and seq2 from cmdl arguments
+    if len(sys.argv) == 3:
+        #line inputs are sequences
+        seq1 = sys.argv[1]
+        seq2 = sys.argv[2]
+        #FIXME: get sequences from file broken
+        #line inputs are files
+        if seq1.endswith('.txt') and seq2.endswith('.txt'):
+            with open(seq1, 'r') as f1, open(seq2, 'r') as f2:
+                seq1 = ''.join(line.strip() for line in f1)
+                seq2 = ''.join(line.strip() for line in f2)
+    else:
+        raise ValueError("Invalid input, could not read sequences or find file")
     P1 = Pairwise(seq1, seq2)
     print(P1)
     print(f"Alignment score: {P1.score()}")
-
