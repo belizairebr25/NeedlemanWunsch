@@ -128,20 +128,29 @@ class Pairwise():
             final_seq2 += char
         return f"{final_seq1}\n{str(final_seq2)}"
 
-if __name__ == "__main__":
-    #get seq1 and seq2 from cmdl arguments
-    if len(sys.argv) == 3:
-        #line inputs are sequences
-        seq1 = sys.argv[1]
-        seq2 = sys.argv[2]
-        #FIXME: get sequences from file broken
-        #line inputs are files
-        if seq1.endswith('.txt') and seq2.endswith('.txt'):
-            with open(seq1, 'r') as f1, open(seq2, 'r') as f2:
-                seq1 = ''.join(line.strip() for line in f1)
-                seq2 = ''.join(line.strip() for line in f2)
+def input_handler(seq1 = None, seq2 = None):
+    if not seq1 and not seq2:
+        #get seq1 and seq2 from cmdl arguments
+        if len(sys.argv) == 3:
+            #line inputs are sequences
+            seq1 = sys.argv[1]
+            seq2 = sys.argv[2]
+            #FIXME: get sequences from file broken
+            #line inputs are files
+            if seq1.endswith('.txt') and seq2.endswith('.txt'):
+                with open(sys.argv[1], "r", encoding="utf-8") as file:
+                    seq1 = file.read()
+                with open(sys.argv[2], "r", encoding="utf-8") as file:
+                    seq2 = file.read()
+        else:
+            raise ValueError("Invalid input, could not read sequences or find file")
+        return [seq1, seq2]
     else:
-        raise ValueError("Invalid input, could not read sequences or find file")
+            raise ValueError("Invalid input, could not read sequences or find file")
+    
+if __name__ == "__main__":
+    inputs = input_handler()
+    seq1, seq2 = inputs[0], inputs[1]
     P1 = Pairwise(seq1, seq2)
     print(P1)
     print(f"Alignment score: {P1.score()}")

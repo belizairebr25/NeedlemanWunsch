@@ -57,6 +57,10 @@ class testPairwise(unittest.TestCase):
         with self.assertRaises(ValueError): Pairwise(True, False)
         with self.assertRaises(ValueError): Pairwise('LAUGHABLE', 'SEQUENCE')
 
+    def test_file_read(self):
+        """test file input handling"""
+        inputs = input_handler('data1.txt', 'data2.txt')
+        self.assertEqual(inputs, ['GCATGCG', 'GATTACA'])
 
 if __name__ == "__main__":
     unittest.main()
