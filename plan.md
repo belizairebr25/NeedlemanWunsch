@@ -1,4 +1,6 @@
-#Deliverable 1
+#veiw in code mode for best format
+
+Deliverable 1
 Project Plan:
     Steps:
         Deliverable 1:
