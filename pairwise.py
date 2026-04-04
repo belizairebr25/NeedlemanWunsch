@@ -129,6 +129,7 @@ class Pairwise():
         return f"{final_seq1}\n{str(final_seq2)}"
 
 def input_handler(seq1 = None, seq2 = None):
+    #FIXME: inputs not handled
     if not seq1 and not seq2:
         #get seq1 and seq2 from cmdl arguments
         if len(sys.argv) == 3:
