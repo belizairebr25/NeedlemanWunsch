@@ -9,10 +9,14 @@ class Pairwise():
     To veiw alignment print the Pairwise object: print(MyAlignment). 
     To veiw the alignment score print the output of the .score() method."""
 
-    def __init__(self, seq1 = None, seq2 = None):
+    def __init__(self, seq1 = None, seq2 = None, match_score = 1, mismatch_score = -1):
         """initialize object variables
-        set up alignment matrix and call methods to compute all optimal paths"""
-        #object 
+        set up alignment matrix and call methods to compute all optimal paths
+        Optional parameters: match_score and mismatch_score set the penalties/rewards.
+        They are initialized to 1 and -1 respectively by default"""
+        #set up scores
+        self.match_score = match_score
+        self.mismatch_score = mismatch_score
         #validate input type
         if type(seq1) != str or type(seq2) != str :
             raise ValueError("Bad input")
@@ -38,18 +42,19 @@ class Pairwise():
     ##### ~Alignment~ #####
     def _matrix_init(self, a, b):
         """create score table and traceback table.
-        Score cells store the maximum possible alignment score from a transition
+        Score cells store the optimal score up to that cell
         In this version each traceback cell stores ALL optimal next moves, 
         whereas in the last version it only stored one determined by the tiebreaking scheme"""
+        #insert a space at the beginning of each sequence so cell scoring always starts at zero
         a = ['X'] + a
         b = ['X'] + b
         #nested is the score table, traceback is the traceback table
         nested = [['N' for _ in range(len(a))] for _ in range(len(b))]
         traceback = [['N' for _ in range(len(a))] for _ in range(len(b))]
-        #position indicators
+        #score position indicators
         a_loc = 0
         b_loc = 0
-        #initialize first column and row
+        #initialize first column and row of score matrix
         if a[a_loc] == 'X' and b[b_loc] == 'X':
             nested[0] = [-1 * i for i in range(len(a))]
             for i in range(len(b)):       
@@ -57,8 +62,10 @@ class Pairwise():
             nested[a_loc][b_loc] = 0  
         else:
             raise ValueError("Bad input")
+        #traceback position indicators
         a_loc = 0
         b_loc = 0
+        #initialize first column and row of traceback matrix
         if a[a_loc] == 'X' and b[b_loc] == 'X':
             traceback[0] = ['horizontal' for i in range(len(a))]
             for i in range(len(b)):
@@ -68,16 +75,22 @@ class Pairwise():
         return [traceback, nested]
     
     def _cell_score(self, a, b, i, j, nested, traceback):
-        """return alignment matrix cell score"""
+        """calculate individual cell score and possible traceback motions"""
+        #if there is a match set a positive score
         if a[j] == b[i]:
-            score = 1
+            score = self.match_score
+        #if there is a mismatch set a negative score
         else:
-            score = -1    
-        vertical = nested[i - 1][j] - 1
-        horizontal = nested[i][j - 1] -1
+            score = self.mismatch_score
+        #calculate the score for a vertical or horizontal motion (gap in one sequence)    
+        vertical = nested[i - 1][j] + self.mismatch_score
+        horizontal = nested[i][j - 1] + self.mismatch_score
+        #calculate the score for a diagonal motion(progression in both sequences)
         diagonal = nested[i - 1][j - 1] + score
+        #find the motion that returns the maximum possible score
         motions = [diagonal, vertical, horizontal]
         maximum = max(motions)
+        #add ALL optimal motions to that cell in the traceback matrix
         traceback[i][j] = []
         if diagonal == maximum:
             traceback[i][j].append('diagonal')
@@ -85,6 +98,7 @@ class Pairwise():
             traceback[i][j].append('vertical')
         if horizontal == maximum:
             traceback[i][j].append('horizontal')
+        #return the calculated cell score
         return maximum
     
     def _print_matrix(self, a, b, nested):
@@ -96,7 +110,8 @@ class Pairwise():
 
     def _traceback_func(self, a, b, traceback, i, j, a_acc = None, b_acc = None, results = None):
         """finds every optimal route through traceback matrix"""
-        if a_acc == None and b_acc == None and results == None: #moderately unprotected
+        #setup case
+        if a_acc == None and b_acc == None and results == None:
             a_acc = []
             b_acc = []
             results = []
@@ -124,6 +139,7 @@ class Pairwise():
         values = self._matrix_init(a, b)
         traceback = values[0]
         nested = values[1]
+        #match the insertion at 0,0 from the matrix setup
         a = ['X'] + a
         b = ['X'] + b
         #fill the score and traceback matricies
