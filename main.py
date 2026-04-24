@@ -151,24 +151,40 @@ class Pairwise():
             output.append("")
         return "\n".join(output)
 
-def get_inputs():
-    """Parse first two sys.argv args as either filepaths or raw sequences."""
-    if len(sys.argv) < 3 or len(sys.argv) > 3:
-        raise ValueError("Invalid sequence inputs, must be files or sequences in format: 'sequence1' 'sequence2' or file1 file2")
-    
+def get_inputs(file1 = None, file2 = None):
+    """handle CMDL input or called inputs for files or string sequences"""
+    #CMDL input
+    if file1 is None and file2 is None:
+        if len(sys.argv) != 3:
+            raise ValueError("Invalid sequence inputs, must be files or sequences in format: 'sequence1' 'sequence2' or file1 file2")
+        arguments = sys.argv[1:3]
+    #called input
+    else:
+        arguments = [0, 0]
+        try:
+            arguments[0], arguments[1] = file1, file2
+        except:
+            raise ValueError("invalid sequence input")
+    #output list
     results = []
-    for i in sys.argv[1:3]:
+    for i in arguments:
+        #handle file inputs
         if os.path.isfile(i):
             with open(i, 'r') as f:
                 results.append(f.read().strip())
         else:
+            #handle string inputs
             results.append(i)
     
     return results[0], results[1]
 
 if __name__ == "__main__":
     """run demo"""
+    #get inputs from CMDL
     seq1, seq2 = get_inputs()
+    #make object and find optimal alignments
     P1 = Pairwise(seq1, seq2)
+    #print optimal alignments
     print(P1)
+    #print Alignment score
     print(f"Alignment score: {P1.score()}")
