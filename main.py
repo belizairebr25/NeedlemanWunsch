@@ -22,8 +22,6 @@ class Pairwise():
             raise ValueError("Bad input")
         self._seq1 = [char for char in seq1] #list stores sequence 1
         self._seq2 = [char for char in seq2] #list stores sequence 2
-        self._final_seq1 = None
-        self._final_seq2 = None
         self._score = None
         #set of all acceptable values:
         _acceptable = {'A', 'G', 'C', 'T', 'U'}

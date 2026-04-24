@@ -32,12 +32,12 @@ Deliverable 2 Progress:
 
     Failing test asserts proper input handling for test files as opposed to CMDL input which is working nominally. This is to be resolved in the next milestone.
 
-Deliverable 3 Plans:
+Deliverable 3:
     Fixed input handling such that the get_inputs method can be used directly, or the pairwise file can be run directly either with file or string arguments.
     Removed deterministic tie breaking and instead branch the recursive traceback every time there is a tie to return every optimal alignment rather than just one.
-    Added verbose and descriptive comments to main program
+    Added verbose and descriptive comments/docstrings to main program
     Updated unit tests to handle new output format
-    
+    All tests pass
 
             
 
